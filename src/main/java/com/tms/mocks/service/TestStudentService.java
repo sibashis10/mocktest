@@ -10,27 +10,72 @@ import org.springframework.stereotype.Service;
 
 import com.tms.mocks.domain.Answer;
 import com.tms.mocks.domain.AnswerPK;
+import com.tms.mocks.domain.Test;
 import com.tms.mocks.domain.TestStudent;
 import com.tms.mocks.repository.AnswerRepository;
 import com.tms.mocks.repository.QuestionRepository;
+import com.tms.mocks.repository.TestRepository;
 import com.tms.mocks.repository.TestStudentRepository;
 import com.tms.mocks.service.vo.AnswerVO;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class TestStudentService {
 
 	private final TestStudentRepository repository;
+	private final TestRepository testRepository;
 	private final AnswerRepository answerRepository;
 	private final QuestionRepository questionRepository; 
 
-	public TestStudentService(final TestStudentRepository repository, final AnswerRepository answerRepository, final QuestionRepository questionRepository) {
+	public TestStudentService(final TestStudentRepository repository, final TestRepository testRepository, final AnswerRepository answerRepository, final QuestionRepository questionRepository) {
 		this.repository = repository;
+		this.testRepository = testRepository;
 		this.answerRepository = answerRepository;
 		this.questionRepository = questionRepository;
 	}
 
-	public List<TestStudent> getTestUserWiseTestStudent(final Long testId, final Long userId) {
-		return repository.findByTestIdAndUserId(testId, userId);
+	public List<TestStudent> getUserAndExamStatusWiseTestStudent(final Long userId, final Boolean complete) {
+		return repository.findByUserIdAndExamEndSuccessfully(userId, complete);
+	}
+	
+	public List<Test> getValidTestList(final List<TestStudent> testStudents) {
+		List<Test> tests = testStudents
+				.stream()
+				.map(testStudent -> testRepository.findById(testStudent.getTestId()).orElse(null))
+				.collect(Collectors.toList());
+		
+		log.info("Raw TestList >>> {}", tests);
+		List<Test> filterTests = tests
+				.stream()
+				.filter(test -> {
+					if(test != null && test.getValidFrom().before(new Date()) && test.getValidTo().after(new Date())) {
+						return true;
+					}
+					return false;
+				})
+				.collect(Collectors.toList());
+		log.info("Valid TestList >>> {}", filterTests);
+		return filterTests;
+	}
+	
+	public List<Test> getHistoryTestList(final List<TestStudent> testStudents) {
+		List<Test> tests = testStudents
+				.stream()
+				.map(testStudent -> testRepository.findById(testStudent.getTestId()).orElse(null))
+				.collect(Collectors.toList());
+		
+		List<Test> filterTest = tests
+				.stream()
+				.filter(test -> {
+					if(test != null) {
+						return true;
+					}
+					return false;
+				})
+				.collect(Collectors.toList());
+		return filterTest;
 	}
 
 	public Optional<TestStudent> findById(final Long id) {
@@ -39,6 +84,10 @@ public class TestStudentService {
 
 	public void save(final TestStudent testStudent) {
 		repository.save(testStudent);
+	}
+	
+	public void saveAll(final List<TestStudent> testStudents) {
+		repository.saveAll(testStudents);
 	}
 
 	public void delete(final Long id) {

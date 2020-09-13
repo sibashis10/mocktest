@@ -27,6 +27,7 @@ public class TestController {
 		return ResponseEntity.status(HttpStatus.OK).body(service.getClassSubjectWiseTest(classId, subjectId));
 	}
 	
+	// Get Test entity with all questions
 	@GetMapping(value = "/tests/{id}")
 	public ResponseEntity<Object> getTest(final @PathVariable Long id) {
 		return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));

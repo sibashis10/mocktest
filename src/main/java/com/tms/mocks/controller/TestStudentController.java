@@ -1,6 +1,7 @@
 package com.tms.mocks.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tms.mocks.domain.Test;
 import com.tms.mocks.domain.TestStudent;
 import com.tms.mocks.service.TestStudentService;
 import com.tms.mocks.service.vo.AnswerVO;
@@ -25,38 +27,63 @@ public class TestStudentController {
 		this.service = service;
 	}
 	
-	@GetMapping(value = "/teststudent/{testId}/{userId}")
-	public ResponseEntity<Object> getAllTestStudents(final @PathVariable Long testId, final @PathVariable Long userId) {
-		return ResponseEntity.status(HttpStatus.OK).body(service.getTestUserWiseTestStudent(testId, userId));
+	// Get all valid Test entity for a Student
+	@GetMapping(value = "/testStudent/{userId}")
+	public ResponseEntity<Object> getAllTestStudents(final @PathVariable Long userId) {
+		List<TestStudent> testStudents = service.getUserAndExamStatusWiseTestStudent(userId, false);
+		List<Test> tests = service.getValidTestList(testStudents);
+		return ResponseEntity.status(HttpStatus.OK).body(tests);
 	}
 	
-	@GetMapping(value = "/teststudent/{id}")
+	// Get TestStudent details for a specific id
+	@GetMapping(value = "/testStudent/{id}")
 	public ResponseEntity<Object> getTestStudent(final @PathVariable Long id) {
 		return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
 	}
 	
-	@PostMapping(value = "/teststudent")
+	// Save Test Student Entity
+	@PostMapping(value = "/testStudent")
 	public ResponseEntity<Object> saveTestStudent(final @RequestBody TestStudent testStudent) {
 		service.save(testStudent);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-	@PutMapping(value = "/teststudent/{id}")
+	@PutMapping(value = "/testStudent/{id}")
 	public ResponseEntity<Object> updateTestStudent(final @PathVariable Long id, final @RequestBody TestStudent testStudent) {
 		service.update(id, testStudent);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 	
-	@DeleteMapping(value = "/teststudent/{id}")
+	@DeleteMapping(value = "/testStudent/{id}")
 	public ResponseEntity<Object> deleteTestStudent(final @PathVariable Long id) {
 		service.delete(id);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 	
-	@PostMapping(value = "/submittest")
+	// Submit examination for a student
+	@PostMapping(value = "/submitTest")
 	public ResponseEntity<Object> submitTest(final @RequestBody List<AnswerVO> answerVOs) {
 		service.submitAnswers(answerVOs);
 		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+	
+	// Assign a Test for List of Students
+	@PostMapping(value = "/assignTestStudents/{testId}")
+	public ResponseEntity<Object> assignTestStudents(final @PathVariable Long testId, final @RequestBody List<Long> userIds) {
+		List<TestStudent> testStudents = userIds.stream()
+			.map(userId ->
+				TestStudent.builder().testId(testId).userId(userId).build())
+			.collect(Collectors.toList());
+		
+		service.saveAll(testStudents);
+		return ResponseEntity.status(HttpStatus.CREATED).build();
+	}
+	
+	@GetMapping(value = "/showHistoryTestList/{userId}")
+	public ResponseEntity<Object> getHistoryTestList(@PathVariable Long userId) {
+		List<TestStudent> testStudents = service.getUserAndExamStatusWiseTestStudent(userId, true);
+		List<Test> tests = service.getHistoryTestList(testStudents);
+		return ResponseEntity.status(HttpStatus.OK).body(tests);
 	}
 
 }

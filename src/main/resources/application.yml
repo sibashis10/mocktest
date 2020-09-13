@@ -28,3 +28,35 @@ spring:
             jwt:
                issuer-uri: http://localhost:8083/auth/realms/adhyapan
                jwk-set-uri: http://localhost:8083/auth/realms/adhyapan/protocol/openid-connect/certs
+               
+---
+## MULTIPART (MultipartProperties)
+# Enable multipart uploads
+spring:
+   servlet:
+      multipart:
+         enabled: true
+         file-size-threshold: 2KB
+         max-file-size: 200MB
+         max-request-size: 215MB
+ 
+---         
+## File Storage Properties
+file:
+   upload-dir: F:/var/questions
+  
+## Logging Properties
+logging:
+   level:
+      org.springframework: ERROR
+      com.tms: DEBUG
+   pattern:
+      console: "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
+      file: "%d %p %c{1.} [%t] %m%n"
+   file: app.log 
+   
+## if no active profile, default is 'default'
+    
+spring:
+  profiles:
+    active: default

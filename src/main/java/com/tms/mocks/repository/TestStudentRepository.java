@@ -9,5 +9,6 @@ import com.tms.mocks.domain.TestStudent;
 public interface TestStudentRepository extends JpaRepository<TestStudent, Long> {
 
 	List<TestStudent> findByTestIdAndUserId(Long testId, Long userId);
+	List<TestStudent> findByUserIdAndExamEndSuccessfully(Long userId, Boolean completed);
 
 }

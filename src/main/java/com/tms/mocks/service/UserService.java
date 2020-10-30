@@ -13,6 +13,6 @@ public interface UserService extends UserDetailsService {
 	User findById(Long id);
 	List<User> findAll();
 	void delete(Long id);
-	void update(Long id, UserVO userVO);
+	User update(Long id, UserVO userVO);
 
 }

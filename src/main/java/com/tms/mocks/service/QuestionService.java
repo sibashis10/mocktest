@@ -25,8 +25,8 @@ public class QuestionService {
         return repository.findById(id);
     }
 	
-	public void save(final Question question) {
-		repository.save(question);
+	public Question save(final Question question) {
+		return repository.save(question);
     }
 	
 	public void delete(final Long id) {

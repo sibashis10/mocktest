@@ -11,19 +11,26 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Entity
 @Table(name="QUESTIONS")
 public class Question implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
-	@SequenceGenerator(name="QUESTIONS_ID_GENERATOR", sequenceName="QUESTIONS")
+	@SequenceGenerator(initialValue = 1, allocationSize = 1, name="QUESTIONS_ID_GENERATOR", sequenceName="QUESTIONS_ID_SEQ")
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="QUESTIONS_ID_GENERATOR")
 	private Long id;
 
@@ -50,12 +57,14 @@ public class Question implements Serializable {
 	@Column(name="created_by")
 	private Long createdBy;
 
+	@CreationTimestamp
 	@Column(name="created_date")
 	private Timestamp createdDate;
 	
 	@Column(name="modified_by")
 	private Long modifiedBy;
 
+	@UpdateTimestamp
 	@Column(name="modified_date")
 	private Timestamp modifiedDate;
 }

@@ -21,8 +21,8 @@ public class RoleService {
         return repository.findById(id);
     }
     
-    public void save(final Role role) {
-    	repository.save(role);
+    public Role save(final Role role) {
+    	return repository.save(role);
     }
 
     public List<Role> findAll() {

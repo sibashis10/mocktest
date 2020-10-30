@@ -25,8 +25,9 @@ public class ChapterService {
         return repository.findById(id);
     }
 	
-	public void save(final Chapter chapter) {
-		repository.save(chapter);
+	public Chapter save(final Chapter chapter) {
+		return repository.save(chapter);
+		
     }
 	
 	public void delete(final Long id) {

@@ -42,20 +42,21 @@ public class RoleController {
 	@PostMapping(value = "/roles")
 	public ResponseEntity<Object> saveRole(final @RequestBody Role role) {
 		log.debug(role.toString());
-		service.save(role);
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+		return ResponseEntity.status(HttpStatus.CREATED).body(service.save(role));
 	}
 
 	@PutMapping(value = "/roles/{id}")
 	public ResponseEntity<Object> updateRole(final @PathVariable Long id, final @RequestBody Role updateRole) {
 		Optional<Role> role = service.findById(id);
 
-		role.ifPresent(object -> {
-			Role.builder().name(updateRole.getName()).description(updateRole.getDescription()).build();
-			service.save(object);
-		});
-
-		return ResponseEntity.status(HttpStatus.OK).build();
+		if(role.isPresent()) {
+			Role r = role.get();
+			r.setName(updateRole.getName());
+			r.setDescription(updateRole.getDescription());
+			return ResponseEntity.status(HttpStatus.OK).body(service.save(r));
+		} else {
+			return new ResponseEntity<>("Role is not found", HttpStatus.NOT_FOUND);
+		}
 	}
 	
 	@DeleteMapping(value = "/roles/{id}")

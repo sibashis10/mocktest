@@ -17,6 +17,9 @@ import com.tms.mocks.domain.Question;
 import com.tms.mocks.service.ChapterService;
 import com.tms.mocks.service.QuestionService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 public class QuestionController {
 	
@@ -29,7 +32,7 @@ public class QuestionController {
 	}
 	
 	// Get chapter wise questions
-	@GetMapping(value = "/questions/{chapterId}")
+	@GetMapping(value = "/chapters/{chapterId}/questions")
 	public ResponseEntity<Object> getAllQuestions(final @PathVariable Long chapterId) {
 		return ResponseEntity.status(HttpStatus.OK).body(service.getChapterWiseQuestion(chapterId));
 	}
@@ -41,14 +44,14 @@ public class QuestionController {
 	}
 	
 	// Save question chapter wise
-	@PostMapping(value = "/questions/{chapterId}")
-	public ResponseEntity<Object> saveQuestion(final @PathVariable Long chapterId, final @RequestBody Question question) {
-		Optional<Chapter> chapter = chapterService.findById(chapterId);
+	@PostMapping(value = "/questions")
+	public ResponseEntity<Object> saveQuestion(final @RequestBody Question question) {
+		Optional<Chapter> chapter = chapterService.findById(question.getChapterId());
 		
 		if(chapter.isPresent()) {
 			question.setChapterId(chapter.get().getId());
-			service.save(question);
-			return ResponseEntity.status(HttpStatus.CREATED).build();
+			log.debug("Question entity to be saved {}", question);
+			return ResponseEntity.status(HttpStatus.CREATED).body(service.save(question));
 		} else {
 			return new ResponseEntity<>("Chapter is not found", HttpStatus.NOT_FOUND);
 		}
@@ -59,20 +62,20 @@ public class QuestionController {
 	public ResponseEntity<Object> updateQuestion(final @PathVariable Long id, final @RequestBody Question updateQuestion) {
 		Optional<Question> question = service.findById(id);
 
-		question.ifPresent(object -> {
-			Question.builder()
-				.chapterId(updateQuestion.getChapterId())
-				.questionImagePath(updateQuestion.getQuestionImagePath())
-				.rightAnswer(updateQuestion.getRightAnswer())
-				.multipleChoice(updateQuestion.getMultipleChoice())
-				.marks(updateQuestion.getMarks())
-				.negativeMark(updateQuestion.getNegativeMark())
-				.noOfOption(updateQuestion.getNoOfOption())
-				.build();
-			service.save(object);
-		});
-
-		return ResponseEntity.status(HttpStatus.OK).build();
+		if(question.isPresent()) {
+			Question qs = question.get();
+			qs.setChapterId(updateQuestion.getChapterId());
+			qs.setQuestionImagePath(updateQuestion.getQuestionImagePath());
+			qs.setRightAnswer(updateQuestion.getRightAnswer());
+			qs.setMultipleChoice(updateQuestion.getMultipleChoice());
+			qs.setMarks(updateQuestion.getMarks());
+			qs.setNegativeMark(updateQuestion.getNegativeMark());
+			qs.setNoOfOption(updateQuestion.getNoOfOption());
+			
+			return ResponseEntity.status(HttpStatus.OK).body(qs);
+		} else {
+			return new ResponseEntity<>("Question is not found", HttpStatus.NOT_FOUND);
+		}		
 	}
 	
 	// Delete a question

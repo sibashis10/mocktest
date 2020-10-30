@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tms.mocks.domain.Chapter;
 import com.tms.mocks.service.ChapterService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 public class ChapterController {
 	
@@ -36,24 +39,23 @@ public class ChapterController {
 	
 	@PostMapping(value = "/chapters")
 	public ResponseEntity<Object> saveChapter(final @RequestBody Chapter chapter) {
-		service.save(chapter);
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+		log.info("Insert chapter >>> " + chapter);
+		return ResponseEntity.status(HttpStatus.CREATED).body(service.save(chapter));
 	}
 
 	@PutMapping(value = "/chapters/{id}")
 	public ResponseEntity<Object> updateChapter(final @PathVariable Long id, final @RequestBody Chapter updateChapter) {
 		Optional<Chapter> chapter = service.findById(id);
-
-		chapter.ifPresent(object -> {
-			Chapter.builder()
-				.name(updateChapter.getName())
-				.classId(updateChapter.getClassId())
-				.subjectId(updateChapter.getSubjectId())
-				.build();
-			service.save(object);
-		});
-
-		return ResponseEntity.status(HttpStatus.OK).build();
+		
+		if(chapter.isPresent()) {
+			Chapter ch = chapter.get();
+			ch.setName(updateChapter.getName());
+			ch.setClassId(updateChapter.getClassId());
+			ch.setSubjectId(updateChapter.getSubjectId());
+			return ResponseEntity.status(HttpStatus.OK).body(service.save(ch));
+		} else {
+			return new ResponseEntity<>("Chapter is not found", HttpStatus.NOT_FOUND);
+		}
 	}
 	
 	@DeleteMapping(value = "/chapters/{id}")

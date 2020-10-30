@@ -11,10 +11,17 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Entity
 @Table(name = "CHAPTERS")
@@ -23,7 +30,7 @@ public class Chapter implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "CHAPTERS_ID_GENERATOR", sequenceName = "CHAPTERS")
+	@SequenceGenerator(initialValue = 1, allocationSize = 1, name = "CHAPTERS_ID_GENERATOR", sequenceName = "CHAPTERS_ID_SEQ")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CHAPTERS_ID_GENERATOR")
 	private Long id;
 
@@ -38,12 +45,14 @@ public class Chapter implements Serializable {
 	@Column(name = "created_by")
 	private Long createdBy;
 
+	@CreationTimestamp
 	@Column(name = "created_date")
 	private Timestamp createdDate;
 
 	@Column(name = "modified_by")
 	private Long modifiedBy;
 
+	@UpdateTimestamp
 	@Column(name = "modified_date")
 	private Timestamp modifiedDate;
 

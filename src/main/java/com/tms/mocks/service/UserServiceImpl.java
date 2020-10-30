@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void update(Long id, UserVO userVO) {
+	public User update(Long id, UserVO userVO) {
 		User user = findById(id);
 		if(userVO.getFirstName() != null)
 			user.setFirstName(userVO.getFirstName());
@@ -137,7 +137,7 @@ public class UserServiceImpl implements UserService {
 			studentRepository.save(student);
 		}
 		
-		repository.save(user);
+		return repository.save(user);
 	}
 
 }

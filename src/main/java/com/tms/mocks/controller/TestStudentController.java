@@ -44,14 +44,17 @@ public class TestStudentController {
 	// Save Test Student Entity
 	@PostMapping(value = "/testStudent")
 	public ResponseEntity<Object> saveTestStudent(final @RequestBody TestStudent testStudent) {
-		service.save(testStudent);
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+		return ResponseEntity.status(HttpStatus.CREATED).body(service.save(testStudent));
 	}
 
 	@PutMapping(value = "/testStudent/{id}")
 	public ResponseEntity<Object> updateTestStudent(final @PathVariable Long id, final @RequestBody TestStudent testStudent) {
-		service.update(id, testStudent);
-		return ResponseEntity.status(HttpStatus.OK).build();
+		TestStudent ts = service.update(id, testStudent);
+		if(ts != null) {
+			return ResponseEntity.status(HttpStatus.OK).body(ts);
+		} else {
+			return new ResponseEntity<>("Test for the Student is not found", HttpStatus.NOT_FOUND);
+		}
 	}
 	
 	@DeleteMapping(value = "/testStudent/{id}")

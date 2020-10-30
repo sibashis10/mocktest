@@ -82,8 +82,8 @@ public class TestStudentService {
 		return repository.findById(id);
 	}
 
-	public void save(final TestStudent testStudent) {
-		repository.save(testStudent);
+	public TestStudent save(final TestStudent testStudent) {
+		return repository.save(testStudent);
 	}
 	
 	public void saveAll(final List<TestStudent> testStudents) {
@@ -94,21 +94,20 @@ public class TestStudentService {
 		repository.deleteById(id);
 	}
 
-	public void update(final Long id, final TestStudent updateTestStudent) {
+	public TestStudent update(final Long id, final TestStudent updateTestStudent) {
 		Optional<TestStudent> testStudent = findById(id);
 
-		testStudent.ifPresent(object -> {
-			TestStudent
-					.builder()
-					.examEndSuccessfully(updateTestStudent.getExamEndSuccessfully())
-					.marksObtained(updateTestStudent.getMarksObtained())
-					.negativeMarking(updateTestStudent.getNegativeMarking())
-					.examStartTime(updateTestStudent.getExamStartTime())
-					.examEndTime(updateTestStudent.getExamEndTime())
-					.build();
-
-			repository.save(object);
-		});
+		if(testStudent.isPresent()) {
+			TestStudent ts = testStudent.get();
+			ts.setExamEndSuccessfully(updateTestStudent.getExamEndSuccessfully());
+			ts.setMarksObtained(updateTestStudent.getMarksObtained());
+			ts.setNegativeMarking(updateTestStudent.getNegativeMarking());
+			ts.setExamStartTime(updateTestStudent.getExamStartTime());
+			ts.setExamEndTime(updateTestStudent.getExamEndTime());
+			return repository.save(ts);
+		} else {
+			return null;
+		}
 	}
 	
 	public void submitAnswers(final List<AnswerVO> answerVOs) {

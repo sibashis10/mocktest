@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tms.mocks.domain.Test;
 import com.tms.mocks.service.TestService;
 import com.tms.mocks.service.vo.TestVO;
 
@@ -35,14 +36,18 @@ public class TestController {
 	
 	@PostMapping(value = "/tests")
 	public ResponseEntity<Object> saveTest(final @RequestBody TestVO testVO) {
-		service.save(testVO);
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+		return ResponseEntity.status(HttpStatus.CREATED).body(service.save(testVO));
 	}
 
 	@PutMapping(value = "/tests/{id}")
 	public ResponseEntity<Object> updateTest(final @PathVariable Long id, final @RequestBody TestVO testVO) {
-		service.update(id, testVO);
-		return ResponseEntity.status(HttpStatus.OK).build();
+		Test test = service.update(id, testVO);
+		if(test != null) {
+			return ResponseEntity.status(HttpStatus.OK).body(test);
+		} else {
+			return new ResponseEntity<>("Test is not found", HttpStatus.NOT_FOUND);
+		}
+		
 	}
 	
 	@DeleteMapping(value = "/tests/{id}")

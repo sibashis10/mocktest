@@ -18,6 +18,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -30,7 +33,7 @@ public class Test implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@SequenceGenerator(name="TESTS_ID_GENERATOR", sequenceName="TESTS")
+	@SequenceGenerator(initialValue = 1, allocationSize = 1, name="TESTS_ID_GENERATOR", sequenceName="TESTS_ID_SEQ")
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="TESTS_ID_GENERATOR")
 	private Long id;
 
@@ -73,12 +76,14 @@ public class Test implements Serializable {
 	@Column(name="created_by")
 	private Long createdBy;
 
+	@CreationTimestamp
 	@Column(name="created_date")
 	private Timestamp createdDate;
 	
 	@Column(name="modified_by")
 	private Long modifiedBy;
 
+	@UpdateTimestamp
 	@Column(name="modified_date")
 	private Timestamp modifiedDate;
 	

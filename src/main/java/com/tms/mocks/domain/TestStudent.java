@@ -23,7 +23,7 @@ public class TestStudent implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@SequenceGenerator(name="TESTS_STUDENTS_ID_GENERATOR", sequenceName="TESTS_STUDENTS")
+	@SequenceGenerator(initialValue = 1, allocationSize = 1, name="TESTS_STUDENTS_ID_GENERATOR", sequenceName="TESTS_STUDENTS_ID_SEQ")
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="TESTS_STUDENTS_ID_GENERATOR")
 	private Long id;
 

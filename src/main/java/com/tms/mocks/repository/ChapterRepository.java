@@ -8,6 +8,6 @@ import com.tms.mocks.domain.Chapter;
 
 public interface ChapterRepository extends JpaRepository<Chapter, Long> {
 	
-	List<Chapter> findByClassIdAndSubjectId(final Long classId, final Long subjectId);
+	List<Chapter> findBySubjectId(final Long subjectId);
 
 }

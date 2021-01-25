@@ -4,18 +4,22 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @Entity
 @Table(name = "CLASSES")
-public class Class {
+public class Clazz implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String className;
 	private String classCode;
-	private Long createdBy;
 	@CreationTimestamp
 	private Date createdOn;
 }

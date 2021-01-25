@@ -3,11 +3,15 @@ package com.tms.mocks.domain;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -36,24 +40,16 @@ public class Chapter implements Serializable {
 
 	private String name;
 
-	@Column(name = "class_id")
-	private Long classId;
-
-	@Column(name = "subject_id")
-	private Long subjectId;
-
-	@Column(name = "created_by")
-	private Long createdBy;
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "subject_id", nullable = true)
+	private Subject subject;
 
 	@CreationTimestamp
-	@Column(name = "created_date")
-	private Timestamp createdDate;
-
-	@Column(name = "modified_by")
-	private Long modifiedBy;
+	@Column(name = "created_on")
+	private Timestamp createdOn;
 
 	@UpdateTimestamp
-	@Column(name = "modified_date")
-	private Timestamp modifiedDate;
+	@Column(name = "modified_on")
+	private Timestamp modifiedOn;
 
 }

@@ -33,7 +33,7 @@ public class QuestionController {
 	
 	// Get chapter wise questions
 	@GetMapping(value = "/chapters/{chapterId}/questions")
-	public ResponseEntity<Object> getAllQuestions(final @PathVariable Long chapterId) {
+	public ResponseEntity<Object> getQuestions(final @PathVariable Long chapterId) {
 		return ResponseEntity.status(HttpStatus.OK).body(service.getChapterWiseQuestion(chapterId));
 	}
 	

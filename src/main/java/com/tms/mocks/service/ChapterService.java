@@ -17,8 +17,12 @@ public class ChapterService {
 		this.repository = repository;
 	}
 
-	public List<Chapter> getClassSubjectWiseChapter(final Long classId, final Long subjectId) {
-		return repository.findByClassIdAndSubjectId(classId, subjectId);
+	public List<Chapter> getAllChapters() {
+		return repository.findAll();
+	}
+	
+	public List<Chapter> getSubjectWiseChapter(final Long subjectId) {
+		return repository.findBySubjectId(subjectId);
 	}
 	
 	public Optional<Chapter> findById(final Long id) {

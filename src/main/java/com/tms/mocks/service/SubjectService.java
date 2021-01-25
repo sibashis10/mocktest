@@ -1,10 +1,12 @@
 package com.tms.mocks.service;
 
-import com.tms.mocks.domain.Subject;
-import com.tms.mocks.repository.SubjectRepository;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.tms.mocks.domain.Subject;
+import com.tms.mocks.repository.SubjectRepository;
 
 @Service
 public class SubjectService {
@@ -16,6 +18,14 @@ public class SubjectService {
 
 	public List<Subject> getAllSubjects() {
 		return subjectRepository.findAll();
+	}
+	
+	public List<Subject> getSubjectsByClazz(final Long classId) {
+		return subjectRepository.findByClazzId(classId);
+	}
+	
+	public Optional<Subject> getSubject(final Long id) {
+		return subjectRepository.findById(id);
 	}
 
 	public Subject getSubjectByCode(final String code) {

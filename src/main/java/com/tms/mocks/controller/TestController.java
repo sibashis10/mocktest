@@ -24,7 +24,7 @@ public class TestController {
 	}
 	
 	@GetMapping(value = "/tests/{classId}/{subjectId}")
-	public ResponseEntity<Object> getAllTests(final @PathVariable Long classId, final @PathVariable Long subjectId) {
+	public ResponseEntity<Object> getTests(final @PathVariable Long classId, final @PathVariable Long subjectId) {
 		return ResponseEntity.status(HttpStatus.OK).body(service.getClassSubjectWiseTest(classId, subjectId));
 	}
 	

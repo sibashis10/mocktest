@@ -30,7 +30,7 @@ public class RoleController {
 	}
 
 	@GetMapping(value = "/roles")
-	public ResponseEntity<Object> getAllRoles() {
+	public ResponseEntity<Object> getRoles() {
 		return ResponseEntity.status(HttpStatus.OK).body(service.findAll());
 	}
 

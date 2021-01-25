@@ -23,6 +23,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.tms.mocks.service.FileStorageService;
 import com.tms.mocks.service.vo.UploadFileResponse;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 public class FileController {
 	
@@ -61,7 +64,7 @@ public class FileController {
 		try {
 			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 		} catch(IOException e) {
-			System.out.println("Could not determine file type.");
+			log.info("Could not determine file type.");
 		}
 		
 		// Fallback to the default content type if type could not be determined

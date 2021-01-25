@@ -1,8 +1,8 @@
 package com.tms.mocks.repository;
 
-import com.tms.mocks.domain.Class;
+import com.tms.mocks.domain.Clazz;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ClassRepository extends JpaRepository<Class, Long> {
-	Class findByClassCode(final String code);
+public interface ClassRepository extends JpaRepository<Clazz, Long> {
+	Clazz findByClassCode(final String code);
 }

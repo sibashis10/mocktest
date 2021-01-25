@@ -25,9 +25,9 @@ import com.tms.mocks.service.vo.UserVO;
 @Service
 public class UserServiceImpl implements UserService {
 
-	final private UserRepository repository;
-	final private RoleRepository roleRepository;
-	final private StudentRepository studentRepository;
+	private final UserRepository repository;
+	private final RoleRepository roleRepository;
+	private final StudentRepository studentRepository;
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;

@@ -1,6 +1,6 @@
 package com.tms.mocks.controller;
 
-import com.tms.mocks.domain.Class;
+import com.tms.mocks.domain.Clazz;
 import com.tms.mocks.service.ClassService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,17 +15,20 @@ public class ClassController {
 	}
 
 	@GetMapping(value = "/classes")
-	public ResponseEntity<Object> getAllClasses() {
-		return ResponseEntity.status(HttpStatus.OK).body(classService.getAllClasses());
+	public ResponseEntity<Object> getClasses(final @RequestParam (required = false) String code) {
+		if(code != null)
+			return ResponseEntity.status(HttpStatus.OK).body(classService.getClassByCode(code.toUpperCase()));
+		else
+			return ResponseEntity.status(HttpStatus.OK).body(classService.getAllClasses());
 	}
 
-	@GetMapping(value = "/classes/{classCode}")
-	public ResponseEntity<Object> getAllClass(final @PathVariable String classCode) {
-		return ResponseEntity.status(HttpStatus.OK).body(classService.getClassByCode(classCode));
+	@GetMapping(value = "/classes/{id}")
+	public ResponseEntity<Object> getClass(final @PathVariable Long id) {
+		return ResponseEntity.status(HttpStatus.OK).body(classService.getClass(id));
 	}
 
 	@PostMapping(value = "/classes")
-	public ResponseEntity<Object> getAllClass(final @RequestBody Class clazz) {
+	public ResponseEntity<Object> saveClass(final @RequestBody Clazz clazz) {
 		classService.saveClass(clazz);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}

@@ -20,12 +20,6 @@ public class UserRegistrationController {
 		this.userService = userService;
 	}
 	
-	/*
-	 * @ModelAttribute("user") public UserRegistrationVO userRegistrationDTO() {
-	 * return new UserRegistrationVO(null, null, null, null, false, false, null,
-	 * null); }
-	 */
-	
 	@GetMapping
 	public String showRegistrationForm() {
 		return "registration";

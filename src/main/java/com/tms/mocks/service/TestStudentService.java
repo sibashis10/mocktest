@@ -47,7 +47,7 @@ public class TestStudentService {
 				.collect(Collectors.toList());
 		
 		log.info("Raw TestList >>> {}", tests);
-		List<Test> filterTests = tests
+		return tests
 				.stream()
 				.filter(test -> {
 					if(test != null && test.getValidFrom().before(new Date()) && test.getValidTo().after(new Date())) {
@@ -56,8 +56,6 @@ public class TestStudentService {
 					return false;
 				})
 				.collect(Collectors.toList());
-		log.info("Valid TestList >>> {}", filterTests);
-		return filterTests;
 	}
 	
 	public List<Test> getHistoryTestList(final List<TestStudent> testStudents) {
@@ -66,7 +64,7 @@ public class TestStudentService {
 				.map(testStudent -> testRepository.findById(testStudent.getTestId()).orElse(null))
 				.collect(Collectors.toList());
 		
-		List<Test> filterTest = tests
+		return tests
 				.stream()
 				.filter(test -> {
 					if(test != null) {
@@ -75,7 +73,6 @@ public class TestStudentService {
 					return false;
 				})
 				.collect(Collectors.toList());
-		return filterTest;
 	}
 
 	public Optional<TestStudent> findById(final Long id) {

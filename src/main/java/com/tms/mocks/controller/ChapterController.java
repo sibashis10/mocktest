@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tms.mocks.domain.Chapter;
+import com.tms.mocks.domain.Subject;
 import com.tms.mocks.service.ChapterService;
+import com.tms.mocks.service.SubjectService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,14 +24,21 @@ import lombok.extern.slf4j.Slf4j;
 public class ChapterController {
 	
 	private final ChapterService service;
+	private final SubjectService subjectService;
 	
-	public ChapterController(final ChapterService service) {
+	public ChapterController(final ChapterService service, final SubjectService subjectService) {
 		this.service = service;
+		this.subjectService = subjectService;
 	}
 	
-	@GetMapping(value = "/chapters/{classId}/{subjectId}")
-	public ResponseEntity<Object> getAllChapters(final @PathVariable Long classId, final @PathVariable Long subjectId) {
-		return ResponseEntity.status(HttpStatus.OK).body(service.getClassSubjectWiseChapter(classId, subjectId));
+	@GetMapping(value = "/chapters")
+	public ResponseEntity<Object> getChapters() {
+		return ResponseEntity.status(HttpStatus.OK).body(service.getAllChapters());
+	}
+	
+	@GetMapping(value = "subjects/{subjectId}/chapters")
+	public ResponseEntity<Object> getChaptersBySubject(final @PathVariable Long subjectId) {
+		return ResponseEntity.status(HttpStatus.OK).body(service.getSubjectWiseChapter(subjectId));
 	}
 	
 	@GetMapping(value = "/chapters/{id}")
@@ -40,7 +49,13 @@ public class ChapterController {
 	@PostMapping(value = "/chapters")
 	public ResponseEntity<Object> saveChapter(final @RequestBody Chapter chapter) {
 		log.info("Insert chapter >>> " + chapter);
-		return ResponseEntity.status(HttpStatus.CREATED).body(service.save(chapter));
+		Optional<Subject> sub = subjectService.getSubject(chapter.getSubject().getId());
+		if(sub.isPresent()) {
+			chapter.setSubject(sub.get());
+			return ResponseEntity.status(HttpStatus.CREATED).body(service.save(chapter));
+		} else {
+			return new ResponseEntity<>("Class not found", HttpStatus.NOT_FOUND);
+		}
 	}
 
 	@PutMapping(value = "/chapters/{id}")
@@ -50,8 +65,7 @@ public class ChapterController {
 		if(chapter.isPresent()) {
 			Chapter ch = chapter.get();
 			ch.setName(updateChapter.getName());
-			ch.setClassId(updateChapter.getClassId());
-			ch.setSubjectId(updateChapter.getSubjectId());
+			ch.setSubject(updateChapter.getSubject());
 			return ResponseEntity.status(HttpStatus.OK).body(service.save(ch));
 		} else {
 			return new ResponseEntity<>("Chapter is not found", HttpStatus.NOT_FOUND);

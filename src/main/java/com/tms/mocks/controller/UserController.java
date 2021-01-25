@@ -23,7 +23,7 @@ public class UserController {
 	}
 	
 	@GetMapping(value = "/users")
-	public ResponseEntity<Object> getAllUsers() {
+	public ResponseEntity<Object> getUsers() {
 		return ResponseEntity.status(HttpStatus.OK).body(service.findAll());
 	}
 
